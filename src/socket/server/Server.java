@@ -2,15 +2,19 @@ package socket.server;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server extends Thread {
+	private String ip = null;
 	private InputStream receiver = null;
 	private OutputStream sender = null;
 
-	public Server(InputStream receiver, OutputStream sender) {
+	public Server(String ip, InputStream receiver, OutputStream sender) {
+		this.ip = ip;
 		this.receiver = receiver;
 		this.sender = sender;
 	}
@@ -20,20 +24,19 @@ public class Server extends Thread {
 		try {
 			while (true) {
 				boolean isBreak = false;
-				// 클라이언트로부터 메시지 대기
-				byte[] data = new byte[4];
-				receiver.read(data, 0, 4);
+				byte[] data = new byte[9];
+				receiver.read(data, 0, 9);
 				String message = new String(data);
 				message.replace("\0", "");
 				String out = String.format("recieve - %s", message);
 				System.out.println(out);
-				// 메시지가 EXIT면 종료한다.
-				if ("EXIT".equals(message)) {
+				if (message.trim().length() == 0) {
 					isBreak = true;
 				}
-				message = "Welcome";
+
+				message = "From Server: " + ip;
 				data = message.getBytes();
-				// Welcome 메시지 보냅니다.
+
 				this.sender.write(data);
 				if (isBreak) {
 					break;
@@ -60,21 +63,31 @@ public class Server extends Thread {
 	}
 
 	public static void main(String... args) {
-		// 자동 close
+
+		InetAddress local;
 		try (ServerSocket server = new ServerSocket()) {
-			// 서버 초기화
-			InetSocketAddress ipep = new InetSocketAddress(9999);
+
+			Scanner scan = new Scanner(System.in);
+			System.out.print("Input Port :");
+			int port = scan.nextInt();
+
+			InetSocketAddress ipep = new InetSocketAddress(port);
+
+			local = InetAddress.getLocalHost();
+
+			String ip = local.getHostAddress();
+
 			server.bind(ipep);
-			System.out.println("Initialize complate");
+
+			System.out.print(ip);
+			System.out.println(": Ready to Recieve");
 
 			while (true) {
-				// LISTEN 대기
 				Socket client = server.accept();
-				System.out.println("Connection");
+				String client_ip = client.getInetAddress().getLocalHost().getHostAddress();
+				System.out.println("Connection with " + client_ip);
 
-				// Stream을 쓰레드로 넘기기
-				Server serverThread = new Server(client.getInputStream(), client.getOutputStream());
-				// 쓰레드 시작(run을 호출한다.)
+				Server serverThread = new Server(ip, client.getInputStream(), client.getOutputStream());
 				serverThread.start();
 			}
 		} catch (Throwable e) {

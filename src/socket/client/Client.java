@@ -7,30 +7,24 @@ import java.net.Socket;
 
 public class Client {
 	public static void main(String... args) {
-		// 자동 close
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10000; i++) {
 			try (Socket client = new Socket()) {
-				// 클라이언트 초기화
-				InetSocketAddress ipep = new InetSocketAddress("127.0.0.1", 9999);
-				// 접속
+
+				InetSocketAddress ipep = new InetSocketAddress("127.0.0.1", 54321);
+
 				client.connect(ipep);
-				// send,reciever 스트림 받아오기
-				// 자동 close
 
 				try (OutputStream sender = client.getOutputStream(); InputStream receiver = client.getInputStream();) {
-					// 서버로 데이터 보내기
-					// 4byte
-					String message = "EXIT";
+
+					String message = "Hello" + i;
 					byte[] data = message.getBytes();
 					sender.write(data, 0, data.length);
-					// 서버로부터 데이터 받기
-					// 7byte - Welcome
-					data = new byte[7];
-					receiver.read(data, 0, 7);
-					// 수신메시지 출력
+					data = new byte[4096];
+					receiver.read(data, 0, 4096);
 					message = new String(data);
 					String out = String.format("recieve - %s", message);
 					System.out.println(out);
+
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();
