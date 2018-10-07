@@ -84,7 +84,7 @@ public class Server extends Thread {
 
 			while (true) {
 				Socket client = server.accept();
-				String client_ip = client.getInetAddress().getLocalHost().getHostAddress();
+				final String client_ip = client.getInetAddress().getLocalHost().getHostAddress();
 				System.out.println("Connection with " + client_ip);
 
 				Server serverThread = new Server(ip, client.getInputStream(), client.getOutputStream());
