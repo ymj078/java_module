@@ -1,22 +1,11 @@
-package socket.io.client;
+package socket.client;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-/**
- * 
- * @author Yoon1
- *
- */
 public class Client {
-	
-	/**
-	 * 
-	 * @author Yoon1
-	 *
-	 */
 	public static void main(String... args) {
 		for (int i = 0; i < 10000; i++) {
 			try (Socket client = new Socket()) {
