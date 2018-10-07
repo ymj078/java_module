@@ -1,4 +1,4 @@
-package socket.server;
+package socket.io.server;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,33 +8,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-/**
- * 
- * @author Yoon1
- *
- */
 public class Server extends Thread {
 	private String ip = null;
-	// Receiver
 	private InputStream receiver = null;
 	private OutputStream sender = null;
 
-	/**
-	 * 
-	 * @author Yoon1
-	 *
-	 */
 	public Server(String ip, InputStream receiver, OutputStream sender) {
 		this.ip = ip;
 		this.receiver = receiver;
 		this.sender = sender;
 	}
 
-	/**
-	 * 
-	 * @author Yoon1
-	 *
-	 */
 	@Override
 	public void run() {
 		try {
@@ -65,11 +49,6 @@ public class Server extends Thread {
 		}
 	}
 
-	/**
-	 * 
-	 * @author Yoon1
-	 *
-	 */
 	public void close() {
 		try {
 			this.receiver.close();
@@ -83,11 +62,6 @@ public class Server extends Thread {
 		}
 	}
 
-	/**
-	 * 
-	 * @author Yoon1
-	 *
-	 */
 	public static void main(String... args) {
 
 		InetAddress local;
@@ -113,7 +87,7 @@ public class Server extends Thread {
 				final String client_ip = client.getInetAddress().getLocalHost().getHostAddress();
 				System.out.println("Connection with " + client_ip);
 
-				final Server  serverThread = new Server(ip, client.getInputStream(), client.getOutputStream());
+				Server serverThread = new Server(ip, client.getInputStream(), client.getOutputStream());
 				serverThread.start();
 			}
 		} catch (Throwable e) {
