@@ -1,4 +1,4 @@
-package socket.client;
+package socket.io.client;
 
 import java.io.InputStream;
 import java.io.OutputStream;
