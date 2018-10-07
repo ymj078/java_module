@@ -35,7 +35,7 @@ public class Server extends Thread {
 	 * @author Yoon1
 	 *
 	 */
-	@Override 
+	@Override
 	public void run() {
 		try {
 			while (true) {
